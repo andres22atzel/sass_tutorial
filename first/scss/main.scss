@@ -1,0 +1,68 @@
+//En la siguiente linea estoy importando parte un codigo de otro archivo scss
+@import './resets/';
+@import './variables/';
+
+//Se creo un function para acortar el map get
+@function weight($weight-name){
+    @return map-get($font-weights,$weight-name);
+}
+
+//se ha creado un mixin al cual se pasa por parametro una variable
+@mixin flexcenter($direction){
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: $direction;
+}
+//mixin 
+@mixin theme($light-theme:true){
+    @if $light-theme{
+        background: lighten($primary-color, 100%);
+        color: darken($text-color, 100%);
+    }
+}
+//mixin con media queries
+@mixin mobile{
+    @media (max-width:$mobile){
+        @content;
+    }
+}
+
+body{
+    background: $primary-color;
+    color: $text-color;
+}
+
+//ya en este atributo vemos el anidado o nesting.
+.main {
+    //se aplica el mixin pasando parametro
+    @include flexcenter(row);
+    //use of calculations
+    width: 80%-40%;
+    margin: 0 auto;
+    //aqui se utilizo interpolacion, el & significa utilizar el tag anterior y con la interpolacion, se agrega todo lo anterior
+    #{&}_paragraph1 {
+        //se implemento una funcion
+        font-weight: weight(bold);
+        // en este caso no se necesito la interpolacion porque el tag anterior contempla la interpolacion
+        &:hover{
+            color:pink;
+        }
+    }
+    //implementacion de mixin con media queries
+    @include mobile{
+        flex-direction: column;
+    }
+    //implementacion de extension
+    #{&}_paragraph2 {
+        @extend .main_paragraph1;
+        &:hover {
+            color:$accent-color;
+        }
+    }
+}
+//implementacin de mixin
+.light {
+    @include theme($light-theme: false);
+}
+
